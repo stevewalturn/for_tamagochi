@@ -23,8 +23,6 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: PetRepository),
     LazySingleton(
       classType: PetService,
-      constructUsing: PetService.new,
-      dependencies: [PetRepository],
     ),
   ],
   bottomsheets: [
