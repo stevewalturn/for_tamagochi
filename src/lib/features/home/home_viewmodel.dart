@@ -32,4 +32,13 @@ class HomeViewModel extends BaseViewModel {
       description: 'desc',
     );
   }
+
+  void runTest() {
+    _dialogService.showCustomDialog(
+      variant: DialogType.infoAlert,
+      title: 'Test Complete!',
+      description:
+          'The test was successful. Everything is working as expected.',
+    );
+  }
 }
