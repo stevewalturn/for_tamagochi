@@ -20,8 +20,8 @@ class HomeViewModel extends BaseViewModel {
   void showDialog() {
     _dialogService.showCustomDialog(
       variant: DialogType.infoAlert,
-      title: 'Steve Rocks!',
-      description: 'Give steve $_counter stars on Github',
+      title: 'Tennis Champion!',
+      description: 'Tennis Champion! You've scored $_counter points!',
     );
   }
 
