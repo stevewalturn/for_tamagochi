@@ -17,6 +17,11 @@ class HomeViewModel extends BaseViewModel {
     rebuildUi();
   }
 
+  void resetCounter() {
+    _counter = 0;
+    rebuildUi();
+  }
+
   void showDialog() {
     _dialogService.showCustomDialog(
       variant: DialogType.infoAlert,

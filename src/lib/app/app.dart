@@ -21,9 +21,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: BottomSheetService),
     LazySingleton(classType: AnalyticService),
     LazySingleton(classType: PetRepository),
-    LazySingleton(
-      classType: PetService,
-    ),
+    LazySingleton(classType: PetService),
   ],
   bottomsheets: [
     StackedBottomsheet(classType: NoticeSheet),
