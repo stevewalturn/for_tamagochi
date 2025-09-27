@@ -6,10 +6,7 @@ import 'package:for_tamagochi/utils/const/const.dart';
 class PetStatsWidget extends StatelessWidget {
   final Pet pet;
 
-  const PetStatsWidget({
-    Key? key,
-    required this.pet,
-  }) : super(key: key);
+  const PetStatsWidget({Key? key, required this.pet}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +16,7 @@ class PetStatsWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildStatBar(
-              'Health',
-              pet.health,
-              kcHealthColor,
-              Icons.favorite,
-            ),
+            _buildStatBar('Health', pet.health, kcHealthColor, Icons.favorite),
             const SizedBox(height: 8),
             _buildStatBar(
               'Hunger',
@@ -52,12 +44,7 @@ class PetStatsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildStatBar(
-    String label,
-    int value,
-    Color color,
-    IconData icon,
-  ) {
+  Widget _buildStatBar(String label, int value, Color color, IconData icon) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -65,12 +52,7 @@ class PetStatsWidget extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 16),
             const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(width: 8),
             Text(
               '$value%',
@@ -85,9 +67,7 @@ class PetStatsWidget extends StatelessWidget {
         LinearProgressIndicator(
           value: value / 100,
           backgroundColor: Colors.grey[200],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            _getStatColor(value),
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(_getStatColor(value)),
         ),
       ],
     );

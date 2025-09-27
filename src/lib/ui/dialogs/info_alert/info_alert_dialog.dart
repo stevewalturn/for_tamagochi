@@ -42,13 +42,17 @@ class InfoAlertDialog extends StackedView<InfoAlertDialogModel> {
                       Text(
                         request.title!,
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w900),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
                       ),
                       verticalSpaceTiny,
                       Text(
                         request.description!,
-                        style:
-                            const TextStyle(fontSize: 14, color: kcMediumGrey),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: kcMediumGrey,
+                        ),
                         maxLines: 3,
                         softWrap: true,
                       ),
@@ -65,18 +69,13 @@ class InfoAlertDialog extends StackedView<InfoAlertDialogModel> {
                     ),
                   ),
                   alignment: Alignment.center,
-                  child: const Text(
-                    '⭐️',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                )
+                  child: const Text('⭐️', style: TextStyle(fontSize: 30)),
+                ),
               ],
             ),
             verticalSpaceMedium,
             GestureDetector(
-              onTap: () => completer(DialogResponse(
-                confirmed: true,
-              )),
+              onTap: () => completer(DialogResponse(confirmed: true)),
               child: Container(
                 height: 50,
                 width: double.infinity,
@@ -94,7 +93,7 @@ class InfoAlertDialog extends StackedView<InfoAlertDialogModel> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

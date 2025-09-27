@@ -70,15 +70,15 @@ class Pet extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        name,
-        health,
-        hunger,
-        happiness,
-        energy,
-        lastFed,
-        lastPlayed,
-        lastSlept,
-        status,
-      ];
+    id,
+    name,
+    health,
+    hunger,
+    happiness,
+    energy,
+    lastFed,
+    lastPlayed,
+    lastSlept,
+    status,
+  ];
 }

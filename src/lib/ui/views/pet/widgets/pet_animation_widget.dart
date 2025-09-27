@@ -6,11 +6,8 @@ class PetAnimationWidget extends StatefulWidget {
   final PetStatus status;
   final String name;
 
-  const PetAnimationWidget({
-    Key? key,
-    required this.status,
-    required this.name,
-  }) : super(key: key);
+  const PetAnimationWidget({Key? key, required this.status, required this.name})
+    : super(key: key);
 
   @override
   State<PetAnimationWidget> createState() => _PetAnimationWidgetState();
@@ -32,10 +29,7 @@ class _PetAnimationWidgetState extends State<PetAnimationWidget>
     _bounceAnimation = Tween<double>(
       begin: 0.0,
       end: 10.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -74,10 +68,7 @@ class _PetAnimationWidgetState extends State<PetAnimationWidget>
         const SizedBox(height: 16),
         Text(
           widget.name,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(

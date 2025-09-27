@@ -31,10 +31,7 @@ class PetStatusDialog extends StackedView<PetStatusDialogModel> {
           children: [
             Text(
               viewModel.pet.name,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
@@ -45,19 +42,13 @@ class PetStatusDialog extends StackedView<PetStatusDialogModel> {
             Text(
               viewModel.statusMessage,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                color: kcMediumGrey,
-              ),
+              style: const TextStyle(fontSize: 16, color: kcMediumGrey),
             ),
             const SizedBox(height: 16),
             Text(
               viewModel.statusDetails,
               textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontSize: 14,
-                color: kcMediumGrey,
-              ),
+              style: const TextStyle(fontSize: 14, color: kcMediumGrey),
             ),
             const SizedBox(height: 24),
             ElevatedButton(

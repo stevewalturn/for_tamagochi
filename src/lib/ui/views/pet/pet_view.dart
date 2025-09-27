@@ -13,11 +13,7 @@ class PetView extends StackedView<PetViewModel> {
   const PetView({Key? key, this.isNewPet = false}) : super(key: key);
 
   @override
-  Widget builder(
-    BuildContext context,
-    PetViewModel viewModel,
-    Widget? child,
-  ) {
+  Widget builder(BuildContext context, PetViewModel viewModel, Widget? child) {
     return Scaffold(
       backgroundColor: kcBackgroundColor,
       appBar: AppBar(
@@ -27,48 +23,45 @@ class PetView extends StackedView<PetViewModel> {
       body: viewModel.isBusy
           ? const Center(child: CircularProgressIndicator())
           : viewModel.hasError
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      viewModel.modelError.toString(),
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  viewModel.modelError.toString(),
+                  style: const TextStyle(color: Colors.red, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : !viewModel.hasPet
+          ? const Center(
+              child: Text(
+                'No pet found. Please create a new pet.',
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    PetAnimationWidget(
+                      status: viewModel.pet!.status,
+                      name: viewModel.pet!.name,
                     ),
-                  ),
-                )
-              : !viewModel.hasPet
-                  ? const Center(
-                      child: Text(
-                        'No pet found. Please create a new pet.',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            PetAnimationWidget(
-                              status: viewModel.pet!.status,
-                              name: viewModel.pet!.name,
-                            ),
-                            verticalSpaceMedium,
-                            PetStatsWidget(pet: viewModel.pet!),
-                            verticalSpaceMedium,
-                            PetActionsWidget(
-                              onFeed: viewModel.feedPet,
-                              onPlay: viewModel.playWithPet,
-                              onSleep: viewModel.putPetToSleep,
-                              petStatus: viewModel.pet!.status,
-                            ),
-                          ],
-                        ),
-                      ),
+                    verticalSpaceMedium,
+                    PetStatsWidget(pet: viewModel.pet!),
+                    verticalSpaceMedium,
+                    PetActionsWidget(
+                      onFeed: viewModel.feedPet,
+                      onPlay: viewModel.playWithPet,
+                      onSleep: viewModel.putPetToSleep,
+                      petStatus: viewModel.pet!.status,
                     ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 

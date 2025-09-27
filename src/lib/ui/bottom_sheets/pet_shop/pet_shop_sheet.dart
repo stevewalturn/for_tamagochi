@@ -8,11 +8,8 @@ class PetShopSheet extends StackedView<PetShopSheetModel> {
   final Function(SheetResponse)? completer;
   final SheetRequest request;
 
-  const PetShopSheet({
-    Key? key,
-    required this.completer,
-    required this.request,
-  }) : super(key: key);
+  const PetShopSheet({Key? key, required this.completer, required this.request})
+    : super(key: key);
 
   @override
   Widget builder(
@@ -34,10 +31,7 @@ class PetShopSheet extends StackedView<PetShopSheetModel> {
         children: [
           const Text(
             'Pet Shop',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
           if (viewModel.hasError)
@@ -76,10 +70,7 @@ class PetShopSheet extends StackedView<PetShopSheetModel> {
               minimumSize: const Size(double.infinity, 50),
             ),
             onPressed: () => completer?.call(SheetResponse(confirmed: true)),
-            child: const Text(
-              'Close',
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text('Close', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -97,14 +88,9 @@ class PetShopSheet extends StackedView<PetShopSheetModel> {
       title: Text(name),
       subtitle: Text(description),
       trailing: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: kcPrimaryColor,
-        ),
+        style: ElevatedButton.styleFrom(backgroundColor: kcPrimaryColor),
         onPressed: onTap,
-        child: const Text(
-          'Buy',
-          style: TextStyle(color: Colors.white),
-        ),
+        child: const Text('Buy', style: TextStyle(color: Colors.white)),
       ),
     );
   }
