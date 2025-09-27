@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:stacked/stacked.dart';
+import 'package:for_tamagochi/ui/common/app_colors.dart';
 
 import 'home_viewmodel.dart';
 
@@ -8,12 +9,9 @@ class HomeView extends StackedView<HomeViewModel> {
   const HomeView({Key? key}) : super(key: key);
 
   @override
-  Widget builder(
-    BuildContext context,
-    HomeViewModel viewModel,
-    Widget? child,
-  ) {
+  Widget builder(BuildContext context, HomeViewModel viewModel, Widget? child) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -30,16 +28,31 @@ class HomeView extends StackedView<HomeViewModel> {
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w900,
+                        color: kcMediumGrey,
                       ),
                     ),
                     const Gap(25),
-                    MaterialButton(
-                      color: Colors.black,
-                      onPressed: viewModel.incrementCounter,
-                      child: Text(
-                        viewModel.counterLabel,
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        MaterialButton(
+                          color: kcPrimaryColor,
+                          onPressed: viewModel.incrementCounter,
+                          child: Text(
+                            viewModel.counterLabel,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const Gap(10),
+                        MaterialButton(
+                          color: kcPrimaryColor,
+                          onPressed: viewModel.resetCounter,
+                          child: const Text(
+                            'Reset',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -47,27 +60,23 @@ class HomeView extends StackedView<HomeViewModel> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     MaterialButton(
-                      color: Colors.grey,
+                      color: kcPrimaryColor,
                       onPressed: viewModel.showDialog,
                       child: const Text(
                         'Show Dialog',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     MaterialButton(
-                      color: Colors.grey,
+                      color: kcPrimaryColor,
                       onPressed: viewModel.showBottomSheet,
                       child: const Text(
                         'Show Bottom Sheet',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -77,8 +86,5 @@ class HomeView extends StackedView<HomeViewModel> {
   }
 
   @override
-  HomeViewModel viewModelBuilder(
-    BuildContext context,
-  ) =>
-      HomeViewModel();
+  HomeViewModel viewModelBuilder(BuildContext context) => HomeViewModel();
 }
