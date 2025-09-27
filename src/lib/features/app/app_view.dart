@@ -36,9 +36,7 @@ class _App extends ViewModelWidget<AppViewModel> {
           initialRoute: Routes.startupView,
           onGenerateRoute: StackedRouter().onGenerateRoute,
           navigatorKey: StackedService.navigatorKey,
-          navigatorObservers: [
-            StackedService.routeObserver,
-          ],
+          navigatorObservers: [StackedService.routeObserver],
         ),
       ),
     );

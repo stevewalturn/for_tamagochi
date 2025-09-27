@@ -8,7 +8,7 @@ class StartupViewModel extends BaseViewModel {
 
   Future<void> runStartupLogic() async {
     await Future.delayed(const Duration(seconds: 1));
-    
+
     // Navigate to PetView instead of HomeView
     await _navigationService.replaceWith(Routes.petView);
   }

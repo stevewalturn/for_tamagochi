@@ -75,11 +75,7 @@ class _ActionButton extends StatelessWidget {
             shape: const CircleBorder(),
             padding: const EdgeInsets.all(16),
           ),
-          child: Icon(
-            icon,
-            size: 32,
-            color: Colors.white,
-          ),
+          child: Icon(icon, size: 32, color: Colors.white),
         ),
         const SizedBox(height: 8),
         Text(

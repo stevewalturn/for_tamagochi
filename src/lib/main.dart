@@ -8,22 +8,25 @@ import 'package:for_tamagochi/app/app.locator.dart';
 import 'features/app/app_view.dart';
 
 void main() async {
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
 
-    await setupLocator();
-    setupDialogUi();
-    setupBottomSheetUi();
+      await setupLocator();
+      setupDialogUi();
+      setupBottomSheetUi();
 
-    runApp(const AppView());
-  }, (exception, stackTrace) async {
-    // Handle exceptions here
-    print('Caught error: $exception');
-    print('Stack trace: $stackTrace');
-    // You might want to log this to a service or show a user-friendly error message
-  });
+      runApp(const AppView());
+    },
+    (exception, stackTrace) async {
+      // Handle exceptions here
+      print('Caught error: $exception');
+      print('Stack trace: $stackTrace');
+      // You might want to log this to a service or show a user-friendly error message
+    },
+  );
 }

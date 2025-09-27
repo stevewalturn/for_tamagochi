@@ -16,8 +16,10 @@ class StartupViewModel extends BaseViewModel {
       if (pet != null) {
         await _navigationService.replaceWith(Routes.petView);
       } else {
-        await _navigationService.replaceWith(Routes.petView,
-            arguments: const PetViewArguments(isNewPet: true));
+        await _navigationService.replaceWith(
+          Routes.petView,
+          arguments: const PetViewArguments(isNewPet: true),
+        );
       }
     } catch (e) {
       setError('Failed to load your pet. Please try again.');
