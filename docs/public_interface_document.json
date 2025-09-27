@@ -1,98 +1,108 @@
 {
   "package_name": "com.global_burger.for_tamagochi",
-  "project_description": "A Tamagotchi-style mobile application that allows users to create, care for, and interact with a virtual pet. The app provides a comprehensive pet management system with features like feeding, playing, and monitoring pet health. Key functionalities include pet creation, status tracking, interactive pet actions, a pet shop, and detailed status dialogs. The application leverages Stacked architecture with robust state management and modular service design.",
-  "architecture_overview": "Implemented using Stacked architecture with a clear separation of concerns. The application is structured around ViewModels, Services, and Views, utilizing dependency injection via StackedLocator. Core components include PetService for managing pet lifecycle, PetRepository for data persistence, and multiple specialized widgets for rendering pet interactions. The architecture supports modular design, easy extensibility, and clean separation between UI and business logic.",
+  "project_description": "A Tamagotchi-style virtual pet mobile application built with Flutter that enables users to create, care for and interact with digital pets. The app features a comprehensive pet management system including pet creation, feeding, playing, sleeping mechanics, health/hunger/happiness tracking, and a pet shop interface. Core features include real-time pet status monitoring, interactive pet actions, detailed pet statistics visualization, and a status-based pet animation system.",
+  "architecture_overview": "The application implements a clean Stacked MVVM architecture with clear separation between UI, business logic and data layers. Key architectural components include:\n- Views (PetView, StartupView) handling UI rendering\n- ViewModels managing business logic and state\n- Services (PetService, AnalyticService) for core functionality\n- Repositories for data persistence\n- Dialogs and bottom sheets for modular UI components\nThe app uses dependency injection via StackedLocator for service management and follows a unidirectional data flow pattern.",
   "files": [
     {
       "name": "lib/app/app.dart",
-      "description": "Defines the app structure using StackedApp annotation for routes, dependencies, bottom sheets, and dialogs. It includes routes (HomeView, StartupView), services (BottomSheetService, DialogService, NavigationService), bottom sheets (NoticeSheet), and dialogs (InfoAlertDialog). The file structure allows for easy addition of new services, routes, bottom sheets, and dialogs using the @stacked-import, @stacked-route, @stacked-service, @stacked-bottom-sheet, and @stacked-dialog annotations.",
-      "class_diagram": "@startuml\nclass App\n@enduml",
-      "methods": [],
+      "description": "This is the application configuration file that sets up the core architecture using the Stacked framework. It defines the app's navigation routes, dependency injection container, and UI components like dialogs and bottom sheets. This file serves as the central configuration point that wires together all major components of the Tamagotchi application.",
+      "class_diagram": "@startuml\nclass App {\n}\n\npackage \"Services\" {\n  class NavigationService\n  class DialogService\n  class BottomSheetService\n  class AnalyticService\n  class PetService\n}\n\npackage \"Repositories\" {\n  class PetRepository\n}\n\npackage \"Views\" {\n  class StartupView\n  class PetView\n}\n\npackage \"UI Components\" {\n  class NoticeSheet\n  class PetShopSheet\n  class InfoAlertDialog\n  class PetStatusDialog\n}\n\nApp --> NavigationService\nApp --> DialogService\nApp --> BottomSheetService\nApp --> AnalyticService\nApp --> PetService\nApp --> PetRepository\n@enduml",
+      "methods": [
+        {
+          "name": "@StackedApp",
+          "description": "Annotation that configures the application's architecture using the Stacked framework",
+          "parameters": null,
+          "return_type": null
+        }
+      ],
       "dependencies": [
-        "package:stacked/stacked_annotations.dart",
-        "package:stacked_services/stacked_services.dart",
-        "package:my_app/ui/bottom_sheets/notice/notice_sheet.dart",
-        "package:my_app/ui/dialogs/info_alert/info_alert_dialog.dart",
-        "package:my_app/features/home/home_view.dart",
-        "package:my_app/features/startup/startup_view.dart"
+        "stacked",
+        "stacked_services",
+        "for_tamagochi/ui/bottom_sheets/notice/notice_sheet.dart",
+        "for_tamagochi/ui/dialogs/info_alert/info_alert_dialog.dart",
+        "for_tamagochi/ui/dialogs/pet_status/pet_status_dialog.dart",
+        "for_tamagochi/ui/bottom_sheets/pet_shop/pet_shop_sheet.dart",
+        "for_tamagochi/ui/views/startup/startup_view.dart",
+        "for_tamagochi/ui/views/pet/pet_view.dart",
+        "for_tamagochi/services/pet_service.dart",
+        "for_tamagochi/services/analytic_service.dart",
+        "for_tamagochi/repositories/pet_repository.dart"
       ]
     },
     {
       "name": "lib/app/app.bottomsheets.dart",
-      "description": "This file is responsible for managing the bottom sheet UI in the Flutter application. It sets up the custom bottom sheet builders for different types of bottom sheets, allowing the application to display various types of bottom sheets as needed.",
-      "class_diagram": "@startuml\n\nclass BottomSheetService {\n  + setCustomSheetBuilders(builders: Map<BottomSheetType, SheetBuilder>)\n}\n\nclass BottomSheetType {\n  + notice\n}\n\ninterface SheetBuilder {\n  + (context: BuildContext, request: SheetRequest, completer: SheetCompleter)\n}\n\nclass NoticeSheet {\n  + (request: SheetRequest, completer: SheetCompleter)\n}\n\nBottomSheetService --> BottomSheetType\nBottomSheetService --> SheetBuilder\nNoticeSheet .> SheetBuilder\n\n@enduml",
+      "description": "A generated file that sets up and registers bottom sheet UI components in the application using the Stacked architecture. It provides a centralized system for managing and displaying bottom sheets through a service-based approach.",
+      "class_diagram": "@startuml\nclass BottomSheetType {\n  +notice\n}\n\nclass \"setupBottomSheetUi()\" {\n  +{static} void setupBottomSheetUi()\n}\n\nclass BottomSheetService\n\nsetupBottomSheetUi --> BottomSheetService: uses\n@enduml",
       "methods": [
         {
           "name": "setupBottomSheetUi",
-          "description": "Sets up the custom bottom sheet builders for different types of bottom sheets, allowing the application to display various types of bottom sheets as needed.",
-          "parameters": [
-            "None"
-          ],
+          "description": "Initializes and configures the bottom sheet service with custom sheet builders. Maps bottom sheet types to their corresponding UI components.",
+          "parameters": [],
           "return_type": "void"
         }
       ],
       "dependencies": [
-        "my_app/app/app.locator.dart",
-        "my_app/ui/bottom_sheets/notice/notice_sheet.dart",
-        "stacked_services/stacked_services.dart"
+        "stacked_services/stacked_services.dart",
+        "app.locator.dart",
+        "ui/bottom_sheets/notice/notice_sheet.dart"
       ]
     },
     {
       "name": "lib/app/app.router.dart",
-      "description": "This file is responsible for managing the navigation and routing within the Flutter application. It defines the available routes, the corresponding views, and provides utility methods to navigate between these views.",
-      "class_diagram": "@startuml\nclass Routes {\n  +static const homeView: String\n  +static const startupView: String\n  +static const all: Set<String>\n}\n\nclass StackedRouter extends RouterBase {\n  +List<RouteDef> get routes()\n  +Map<Type, StackedRouteFactory> get pagesMap()\n}\n\nclass NavigatorStateExtension on NavigationService {\n  +Future<dynamic> navigateToHomeView(...)\n  +Future<dynamic> navigateToStartupView(...)\n  +Future<dynamic> replaceWithHomeView(...)\n  +Future<dynamic> replaceWithStartupView(...)\n}\n@enduml",
+      "description": "An auto-generated router file for navigation management using the Stacked framework. It defines application routes and provides type-safe navigation methods for moving between HomeView and StartupView screens. The file handles route definitions, route factories, and navigation extension methods.",
+      "class_diagram": "@startuml\nclass Routes {\n  +{static} String homeView\n  +{static} String startupView\n  +{static} Set<String> all\n}\n\nclass StackedRouter {\n  -List<RouteDef> _routes\n  -Map<Type, StackedRouteFactory> _pagesMap\n  +List<RouteDef> routes\n  +Map<Type, StackedRouteFactory> pagesMap\n}\n\nclass NavigatorStateExtension {\n  +Future navigateToHomeView()\n  +Future navigateToStartupView()\n  +Future replaceWithHomeView()\n  +Future replaceWithStartupView()\n}\n@enduml",
       "methods": [
         {
           "name": "navigateToHomeView",
-          "description": "Navigates to the HomeView screen.",
+          "description": "Navigates to the HomeView screen",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "navigateToStartupView",
-          "description": "Navigates to the StartupView screen.",
+          "description": "Navigates to the StartupView screen",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "replaceWithHomeView",
-          "description": "Replaces the current route with the HomeView screen.",
+          "description": "Replaces current screen with HomeView",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "replaceWithStartupView",
-          "description": "Replaces the current route with the StartupView screen.",
+          "description": "Replaces current screen with StartupView",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         }
       ],
       "dependencies": [
-        "package:flutter/material.dart",
-        "package:my_app/ui/views/home/home_view.dart",
-        "package:my_app/ui/views/startup/startup_view.dart",
-        "package:stacked/stacked.dart",
-        "package:stacked_services/stacked_services.dart"
+        "flutter/material.dart",
+        "for_tamagochi/features/home/home_view.dart",
+        "for_tamagochi/features/startup/startup_view.dart",
+        "stacked/stacked.dart",
+        "stacked_services/stacked_services.dart"
       ]
     },
     {
@@ -146,38 +156,43 @@
     },
     {
       "name": "lib/ui/common/ui_helpers.dart",
-      "description": "This Dart file provides a collection of common UI helper functions and constants that are used throughout the Flutter application's user interface. It serves as a centralized location for managing and accessing various UI-related utilities, ensuring consistency and reusability across the codebase.",
-      "class_diagram": "@startuml\nclass UIHelpers {\n  + const horizontalSpaceTiny: Widget\n  + const horizontalSpaceSmall: Widget\n  + const horizontalSpaceMedium: Widget\n  + const horizontalSpaceLarge: Widget\n  + const verticalSpaceTiny: Widget\n  + const verticalSpaceSmall: Widget\n  + const verticalSpaceMedium: Widget\n  + const verticalSpaceLarge: Widget\n  + const verticalSpaceMassive: Widget\n  + const spacedDivider: Widget\n  + verticalSpace(height: double): Widget\n  + screenWidth(context: BuildContext): double\n  + screenHeight(context: BuildContext): double\n  + screenHeightFraction(context: BuildContext, dividedBy: int, offsetBy: double, max: double): double\n  + screenWidthFraction(context: BuildContext, dividedBy: int, offsetBy: double, max: double): double\n  + halfScreenWidth(context: BuildContext): double\n  + thirdScreenWidth(context: BuildContext): double\n  + quarterScreenWidth(context: BuildContext): double\n  + getResponsiveHorizontalSpaceMedium(context: BuildContext): double\n  + getResponsiveSmallFontSize(context: BuildContext): double\n  + getResponsiveMediumFontSize(context: BuildContext): double\n  + getResponsiveLargeFontSize(context: BuildContext): double\n  + getResponsiveExtraLargeFontSize(context: BuildContext): double\n  + getResponsiveMassiveFontSize(context: BuildContext): double\n  + getResponsiveFontSize(context: BuildContext, fontSize: double, max: double): double\n}\n@enduml",
+      "description": "A utility file that provides common UI spacing and responsive sizing helpers for consistent layout and spacing across the application. It includes predefined spacing widgets, screen dimension calculations, and responsive font sizing functions.",
+      "class_diagram": "@startuml\nset namespaceSeparator ::\n\nclass ui_helpers {\n  {static} +const horizontalSpaceTiny: Widget\n  {static} +const horizontalSpaceSmall: Widget\n  {static} +const verticalSpaceTiny: Widget\n  {static} +const verticalSpaceSmall: Widget\n  {static} +screenWidth(context: BuildContext): double\n  {static} +screenHeight(context: BuildContext): double\n  {static} +getResponsiveFontSize(context: BuildContext, fontSize: double?, max: double?): double\n}\n@enduml",
       "methods": [
         {
-          "name": "horizontalSpaceTiny",
-          "description": "A constant Widget that provides a tiny horizontal space.",
-          "parameters": null,
-          "return_type": "Widget"
-        },
-        {
-          "name": "verticalSpace",
-          "description": "A function that creates a Widget with a specified vertical space.",
-          "parameters": [
-            "height"
-          ],
-          "return_type": "Widget"
-        },
-        {
           "name": "screenWidth",
-          "description": "A function that returns the width of the screen.",
+          "description": "Gets the total width of the device screen",
           "parameters": [
-            "context"
+            "BuildContext context"
+          ],
+          "return_type": "double"
+        },
+        {
+          "name": "screenHeight",
+          "description": "Gets the total height of the device screen",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "double"
+        },
+        {
+          "name": "screenWidthFraction",
+          "description": "Calculates a fraction of the screen width with optional offset and maximum value",
+          "parameters": [
+            "BuildContext context",
+            "int dividedBy",
+            "double offsetBy",
+            "double max"
           ],
           "return_type": "double"
         },
         {
           "name": "getResponsiveFontSize",
-          "description": "A function that calculates a responsive font size based on the screen width.",
+          "description": "Calculates a responsive font size based on screen width",
           "parameters": [
-            "context",
-            "fontSize",
-            "max"
+            "BuildContext context",
+            "double? fontSize",
+            "double? max"
           ],
           "return_type": "double"
         }
@@ -189,12 +204,12 @@
     },
     {
       "name": "lib/ui/bottom_sheets/notice/notice_sheet.dart",
-      "description": "The NoticeSheet class is responsible for displaying a bottom sheet with a notice or alert message to the user. It is part of the UI layer of the application and is used to present important information or updates to the user in a modal dialog.",
-      "class_diagram": "@startuml\n  class NoticeSheet {\n    + NoticeSheet({required this.completer, required this.request})\n    + Widget builder(BuildContext context, NoticeSheetModel viewModel, Widget? child)\n    + NoticeSheetModel viewModelBuilder(BuildContext context)\n  }\n\n  class NoticeSheetModel {\n    # NoticeSheetModel()\n  }\n\n  NoticeSheet --> NoticeSheetModel\n  @enduml",
+      "description": "A reusable bottom sheet widget that displays notice/alert messages to users with a title and description. It's part of the UI layer and provides a consistent way to show informational messages across the application.",
+      "class_diagram": "@startuml\nclass NoticeSheet {\n  +Function(SheetResponse)? completer\n  +SheetRequest request\n  +Widget builder(BuildContext, NoticeSheetModel, Widget?)\n  +NoticeSheetModel viewModelBuilder(BuildContext)\n}\nnote right: Extends StackedView<NoticeSheetModel>\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Builds the UI of the NoticeSheet, which includes the title, description, and any other relevant content.",
+          "description": "Builds the UI for the notice sheet, displaying the title and description from the sheet request",
           "parameters": [
             "BuildContext context",
             "NoticeSheetModel viewModel",
@@ -204,7 +219,7 @@
         },
         {
           "name": "viewModelBuilder",
-          "description": "Provides an instance of the NoticeSheetModel, which is used to manage the state and logic of the NoticeSheet.",
+          "description": "Creates and returns a new instance of NoticeSheetModel",
           "parameters": [
             "BuildContext context"
           ],
@@ -212,12 +227,12 @@
         }
       ],
       "dependencies": [
-        "package:flutter/material.dart",
-        "package:my_app/ui/bottom_sheets/notice/notice_sheet_model.dart",
-        "package:my_app/ui/common/app_colors.dart",
-        "package:my_app/ui/common/ui_helpers.dart",
-        "package:stacked/stacked.dart",
-        "package:stacked_services/stacked_services.dart"
+        "flutter/material.dart",
+        "stacked/stacked.dart",
+        "stacked_services/stacked_services.dart",
+        "for_tamagochi/ui/bottom_sheets/notice/notice_sheet_model.dart",
+        "for_tamagochi/ui/common/app_colors.dart",
+        "for_tamagochi/ui/common/ui_helpers.dart"
       ]
     },
     {
@@ -238,63 +253,62 @@
     },
     {
       "name": "lib/ui/views/startup/startup_view.dart",
-      "description": "The `StartupView` class in this file is responsible for the initial startup screen of the application. It is the main entry point for the user when they launch the app, displaying the app's logo and a loading indicator while the app's startup logic is being executed.",
-      "class_diagram": "@startuml\nclass StartupView {\n  + builder(BuildContext, StartupViewModel, Widget?): Widget\n  + viewModelBuilder(BuildContext): StartupViewModel\n  + onViewModelReady(StartupViewModel): void\n}\n\nclass StartupViewModel {\n  + runStartupLogic(): void\n}\n\nStartupView --> StartupViewModel\n@enduml",
+      "description": "A Flutter widget that implements the startup/splash screen for a Tamagotchi application. It displays a loading screen with the app title and a progress indicator while the application performs initial startup logic.",
+      "class_diagram": "@startuml\nclass StartupView {\n  +builder(BuildContext, StartupViewModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): StartupViewModel\n  +onViewModelReady(StartupViewModel): void\n}\nStartupView --|> StackedView\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Builds the UI for the startup screen, displaying the app's logo and a loading indicator.",
+          "description": "Builds the UI for the startup screen, displaying the app title, error message if any, and loading indicator",
           "parameters": [
-            "BuildContext",
-            "StartupViewModel",
-            "Widget?"
+            "BuildContext context",
+            "StartupViewModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Provides an instance of the `StartupViewModel` to be used by the `StartupView`.",
+          "description": "Creates and returns a new instance of StartupViewModel",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "StartupViewModel"
         },
         {
           "name": "onViewModelReady",
-          "description": "Called when the `StartupViewModel` is ready, triggering the execution of the app's startup logic.",
+          "description": "Triggers the startup logic when the view model is ready",
           "parameters": [
-            "StartupViewModel"
+            "StartupViewModel viewModel"
           ],
-          "return_type": null
+          "return_type": "void"
         }
       ],
       "dependencies": [
         "flutter/material.dart",
-        "flutter/scheduler.dart",
-        "gap/gap.dart",
-        "my_app/ui/views/startup/startup_viewmodel.dart",
-        "stacked/stacked.dart"
+        "stacked",
+        "ui/common/app_colors.dart",
+        "ui/common/ui_helpers.dart",
+        "ui/views/startup/startup_viewmodel.dart"
       ]
     },
     {
       "name": "lib/ui/views/startup/startup_viewmodel.dart",
-      "description": "The StartupViewModel class is responsible for handling the initial startup logic of the application. It is responsible for delaying the application launch by a few seconds and then navigating to the home view, which is the main entry point of the application.",
-      "class_diagram": "@startuml\n  class StartupViewModel {\n    -_navigationService : NavigationService\n    +runStartupLogic() : Future\n  }\n  @enduml",
+      "description": "A ViewModel class that handles the application startup logic, determining whether to show an existing pet or create a new one. It manages the initial navigation flow of the application based on whether a pet already exists in the system.",
+      "class_diagram": "@startuml\nclass StartupViewModel {\n  -NavigationService _navigationService\n  -PetService _petService\n  +Future<void> runStartupLogic()\n}\nStartupViewModel --|> BaseViewModel\nStartupViewModel --> NavigationService\nStartupViewModel --> PetService\n@enduml",
       "methods": [
         {
           "name": "runStartupLogic",
-          "description": "This method is responsible for the core startup logic of the application. It delays the application launch by 3 seconds and then navigates to the home view using the NavigationService.",
-          "parameters": [
-            "None"
-          ],
-          "return_type": "Future"
+          "description": "Executes the startup sequence including a delay, checks for existing pet, and navigates to appropriate screen",
+          "parameters": [],
+          "return_type": "Future<void>"
         }
       ],
       "dependencies": [
-        "my_app/app/app.locator.dart",
-        "my_app/app/app.router.dart",
-        "stacked/stacked.dart",
-        "stacked_services/stacked_services.dart"
+        "stacked",
+        "stacked_services",
+        "app.locator.dart",
+        "app.router.dart",
+        "services/pet_service.dart"
       ]
     },
     {
@@ -306,75 +320,75 @@
     },
     {
       "name": "lib/ui/dialogs/info_alert/info_alert_dialog.dart",
-      "description": "This file defines an InfoAlertDialog class, which is responsible for displaying an informative alert dialog with a title, description, and a confirmation button. The primary purpose of this class is to provide a reusable and customizable way to present important information to the user within the application.",
-      "class_diagram": "@startuml\nclass InfoAlertDialog {\n  -DialogRequest request\n  -Function(DialogResponse) completer\n  +builder(BuildContext, InfoAlertDialogModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): InfoAlertDialogModel\n}\n\nclass InfoAlertDialogModel {\n}\n\nInfoAlertDialog *-- InfoAlertDialogModel\n@enduml",
+      "description": "A reusable information alert dialog widget that displays a title, description, and confirmation button. It uses the Stacked architecture pattern and provides a consistent way to show informational messages to users with a styled dialog box featuring a star emoji icon.",
+      "class_diagram": "@startuml\nclass InfoAlertDialog {\n  - DialogRequest request\n  - Function(DialogResponse) completer\n  + Widget builder(BuildContext, InfoAlertDialogModel, Widget?)\n  + InfoAlertDialogModel viewModelBuilder(BuildContext)\n}\nInfoAlertDialog --|> StackedView\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "The main build method that constructs the UI for the InfoAlertDialog. It takes the DialogRequest, DialogResponse completer, and the view model as input and returns the final widget.",
+          "description": "Builds the dialog UI with title, description, star icon, and confirmation button",
           "parameters": [
-            "BuildContext",
-            "InfoAlertDialogModel",
-            "Widget?"
+            "BuildContext context",
+            "InfoAlertDialogModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "A method that creates and returns an instance of the InfoAlertDialogModel, which is used to manage the state and logic of the dialog.",
+          "description": "Creates and returns the view model for the dialog",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "InfoAlertDialogModel"
         }
       ],
       "dependencies": [
-        "package:flutter/material.dart",
-        "package:my_app/ui/common/app_colors.dart",
-        "package:my_app/ui/common/ui_helpers.dart",
-        "package:my_app/ui/dialogs/info_alert/info_alert_dialog_model.dart",
-        "package:stacked/stacked.dart",
-        "package:stacked_services/stacked_services.dart"
+        "flutter/material.dart",
+        "stacked/stacked.dart",
+        "stacked_services/stacked_services.dart",
+        "for_tamagochi/ui/common/app_colors.dart",
+        "for_tamagochi/ui/common/ui_helpers.dart",
+        "for_tamagochi/ui/dialogs/info_alert/info_alert_dialog_model.dart"
       ]
     },
     {
       "name": "lib/app/app.locator.dart",
-      "description": "This file is responsible for setting up and managing the service locator in a Flutter application built using the Stacked architecture pattern. The service locator is a crucial component that allows different parts of the application to access and interact with various services and dependencies, promoting a modular and decoupled design.",
-      "class_diagram": "",
+      "description": "A generated dependency injection configuration file that sets up the service locator for the application. It registers core services like navigation, dialogs, and bottom sheets as lazy singletons using the Stacked architecture pattern.",
+      "class_diagram": "@startuml\nclass StackedLocator {\n  +instance: StackedLocator\n  +registerEnvironment(environment: String?, environmentFilter: EnvironmentFilter?)\n  +registerLazySingleton<T>(factory: Function)\n}\n\nclass \"Core Services\" {\n  BottomSheetService\n  DialogService\n  NavigationService\n}\n\nStackedLocator --> \"Core Services\" : registers\n@enduml",
       "methods": [
         {
           "name": "setupLocator",
-          "description": "This method is responsible for registering the necessary services and dependencies with the service locator. It allows the application to access and use these services throughout the codebase.",
+          "description": "Initializes the service locator by registering environment configurations and core services as lazy singletons",
           "parameters": [
-            "environment",
-            "environmentFilter"
+            "environment: String?",
+            "environmentFilter: EnvironmentFilter?"
           ],
           "return_type": "Future<void>"
         }
       ],
       "dependencies": [
-        "stacked_services/src/bottom_sheet/bottom_sheet_service.dart",
-        "stacked_services/src/dialog/dialog_service.dart",
-        "stacked_services/src/navigation/navigation_service.dart",
+        "stacked_services/bottom_sheet/bottom_sheet_service.dart",
+        "stacked_services/dialog/dialog_service.dart",
+        "stacked_services/navigation/navigation_service.dart",
         "stacked_shared/stacked_shared.dart"
       ]
     },
     {
       "name": "lib/app/app.dialogs.dart",
-      "description": "This file is responsible for setting up and managing the dialog system used throughout the application. It defines the available dialog types, registers the custom dialog builders, and provides a centralized way to interact with the dialog service.",
-      "class_diagram": "@startuml\n'Hide the stereotype since it is the default for class\n'hide circle\n'hide methods\n'skinparam classAttributeIconSize 0\n\nclass DialogType {\n  infoAlert\n}\n\nclass DialogBuilder {\n  (BuildContext, DialogRequest, DialogCompleter) => Widget\n}\n\nclass DialogService {\n  + registerCustomDialogBuilders(Map<DialogType, DialogBuilder>)\n}\n\n'Relationships\nDialogType *-- DialogBuilder : builds\nDialogService o-- DialogBuilder : uses\n\n@enduml",
+      "description": "A generated file that sets up and registers custom dialog UI builders for the application. It establishes the mapping between dialog types and their corresponding widget implementations, enabling the application to show custom dialogs using the DialogService.",
+      "class_diagram": "@startuml\nenum DialogType {\n  infoAlert\n}\n\nclass \"app.dialogs\" {\n  +setupDialogUi(): void\n}\n\nclass DialogService\nclass InfoAlertDialog\n\n\"app.dialogs\" --> DialogType\n\"app.dialogs\" --> DialogService\n\"app.dialogs\" --> InfoAlertDialog\n@enduml",
       "methods": [
         {
           "name": "setupDialogUi",
-          "description": "Configures the dialog service by registering the custom dialog builders for each dialog type.",
-          "parameters": null,
+          "description": "Initializes and registers custom dialog builders with the DialogService. This method creates a mapping between DialogType enum values and their corresponding dialog widget builders.",
+          "parameters": [],
           "return_type": "void"
         }
       ],
       "dependencies": [
-        "my_app/app/app.locator.dart",
-        "my_app/ui/dialogs/info_alert/info_alert_dialog.dart",
-        "stacked_services/stacked_services.dart"
+        "stacked_services/stacked_services.dart",
+        "app.locator.dart",
+        "ui/dialogs/info_alert/info_alert_dialog.dart"
       ]
     },
     {
@@ -411,84 +425,86 @@
     },
     {
       "name": "lib/main.dart",
-      "description": "Application entry point for a Tamagotchi-style mobile application that sets up core app configuration, handles initialization, and provides error management for the Flutter app startup process",
-      "class_diagram": "@startuml\nclass Main {\n  +void main()\n  -void runZonedGuarded()\n}\n@enduml",
+      "description": "The main entry point of the Flutter application that initializes core services, sets up error handling, configures device orientation, and launches the app. It implements a robust startup sequence with error boundary protection using runZonedGuarded.",
+      "class_diagram": "@startuml\nclass Main {\n  +{static} main(): void\n}\nnote right: Application entry point\n\nMain --> AppView: launches\nMain --> SystemChrome: configures\nMain --> setupLocator: initializes\nMain --> setupDialogUi: configures\nMain --> setupBottomSheetUi: configures\n@enduml",
       "methods": [
         {
           "name": "main",
-          "description": "Primary application entry point that initializes Flutter environment, sets device orientation, configures dependencies, and launches the app",
+          "description": "Application entry point that initializes required services and launches the app with error handling",
           "parameters": null,
-          "return_type": "void"
+          "return_type": "Future<void>"
         }
       ],
       "dependencies": [
         "dart:async",
-        "flutter/material.dart",
-        "flutter/services.dart",
-        "for_tamagochi/app/app.bottomsheets.dart",
-        "for_tamagochi/app/app.dialogs.dart",
-        "for_tamagochi/app/app.locator.dart",
-        "features/app/app_view.dart"
+        "package:flutter/material.dart",
+        "package:flutter/services.dart",
+        "package:for_tamagochi/app/app.bottomsheets.dart",
+        "package:for_tamagochi/app/app.dialogs.dart",
+        "package:for_tamagochi/app/app.locator.dart",
+        "package:for_tamagochi/features/app/app_view.dart"
       ]
     },
     {
       "name": "lib/features/startup/startup_view.dart",
-      "description": "A startup screen view responsible for initializing the application and displaying a loading state during initial setup. It provides a centralized entry point for launching the app with a branded loading experience.",
-      "class_diagram": "@startuml\nclass StartupView {\n  +builder(BuildContext, StartupViewModel)\n  +viewModelBuilder(BuildContext)\n  +onViewModelReady(StartupViewModel)\n}\n@enduml",
+      "description": "A Flutter widget that implements the startup/loading screen of the ForTamagochi application. It displays a loading indicator and application name while the app initializes and performs startup logic. This view is typically the first screen users see when launching the application.",
+      "class_diagram": "@startuml\nclass StartupView {\n  +builder(BuildContext, StartupViewModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): StartupViewModel\n  +onViewModelReady(StartupViewModel): void\n}\nnote right: Extends StackedView<StartupViewModel>\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the UI for the startup screen, showing the app name and a loading indicator",
+          "description": "Builds the UI for the startup screen, showing the app name and loading indicator",
           "parameters": [
-            "BuildContext",
-            "StartupViewModel",
-            "Widget"
+            "BuildContext context",
+            "StartupViewModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Creates the associated ViewModel for startup logic and initialization",
+          "description": "Creates and returns a new instance of StartupViewModel",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "StartupViewModel"
         },
         {
           "name": "onViewModelReady",
-          "description": "Triggers initial startup logic after the view is rendered",
+          "description": "Triggers the startup logic after the frame is rendered",
           "parameters": [
-            "StartupViewModel"
+            "StartupViewModel viewModel"
           ],
           "return_type": null
         }
       ],
       "dependencies": [
         "flutter/material.dart",
+        "flutter/scheduler.dart",
+        "gap/gap.dart",
         "stacked/stacked.dart",
         "startup_viewmodel.dart"
       ]
     },
     {
       "name": "lib/ui/dialogs/pet_status/pet_status_dialog.dart",
-      "description": "A dialog component for displaying a pet's current status in a Tamagochi-like application, providing users with detailed information about their virtual pet's well-being, mood, and current condition",
-      "class_diagram": "@startuml\nclass PetStatusDialog {\n  +request: DialogRequest\n  +completer: Function(DialogResponse)\n  +builder(context, viewModel)\n  +viewModelBuilder(context)\n}\n@enduml",
+      "description": "A Flutter dialog widget that displays detailed status information about a virtual pet, including its name, emotional state (emoji), status message, and detailed statistics. This dialog provides users with a comprehensive overview of their pet's current condition in a visually appealing and organized manner.",
+      "class_diagram": "@startuml\nclass PetStatusDialog {\n  -DialogRequest request\n  -Function(DialogResponse) completer\n  +builder(BuildContext, PetStatusDialogModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): PetStatusDialogModel\n}\nclass StackedView<PetStatusDialogModel>\nPetStatusDialog --|> StackedView\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the visual layout of the pet status dialog, displaying pet name, status emoji, message, and details",
+          "description": "Builds the dialog UI displaying pet status information including name, emoji, status message and details",
           "parameters": [
-            "BuildContext",
-            "PetStatusDialogModel",
-            "Widget?"
+            "BuildContext context",
+            "PetStatusDialogModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Creates the view model for the pet status dialog, initializing with the current pet data",
+          "description": "Creates and returns a PetStatusDialogModel instance using the pet data from the dialog request",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "PetStatusDialogModel"
         }
@@ -504,47 +520,48 @@
     },
     {
       "name": "lib/services/pet_service.dart",
-      "description": "A service layer for managing a virtual pet's lifecycle, tracking and updating its status, and handling core interactions like feeding, playing, and sleeping. This service provides business logic for maintaining a tamagotchi-style pet game experience.",
-      "class_diagram": "@startuml\nclass PetService {\n  - _petRepository: PetRepository\n  + getCurrentPet(): Pet\n  + createPet(name: String)\n  + feedPet()\n  + playWithPet()\n  + putPetToSleep()\n}\n@enduml",
+      "description": "Service class that manages virtual pet interactions and state changes in a Tamagotchi-like game. It handles core pet operations like feeding, playing, sleeping, and status updates while abstracting database operations through a repository.",
+      "class_diagram": "@startuml\nclass PetService {\n  -_petRepository: PetRepository\n  +getCurrentPet(): Future<Pet?>\n  +createPet(String name): Future<void>\n  +feedPet(): Future<void>\n  +playWithPet(): Future<void>\n  +putPetToSleep(): Future<void>\n}\n@enduml",
       "methods": [
         {
           "name": "getCurrentPet",
-          "description": "Retrieves the current pet, updating its status and stats based on time elapsed",
-          "parameters": null,
+          "description": "Retrieves the current pet from storage and updates its status",
+          "parameters": [],
           "return_type": "Future<Pet?>"
         },
         {
           "name": "createPet",
-          "description": "Creates a new pet with the specified name and saves it to the repository",
+          "description": "Creates a new pet with initial stats and saves it to storage",
           "parameters": [
-            "name"
+            "String name"
           ],
           "return_type": "Future<void>"
         },
         {
           "name": "feedPet",
-          "description": "Increases pet's hunger level and updates last fed timestamp",
-          "parameters": null,
+          "description": "Increases pet's hunger stat and updates it in storage",
+          "parameters": [],
           "return_type": "Future<void>"
         },
         {
           "name": "playWithPet",
-          "description": "Increases pet's happiness while decreasing energy, and updates last played timestamp",
-          "parameters": null,
+          "description": "Increases happiness and decreases energy stats of the pet",
+          "parameters": [],
           "return_type": "Future<void>"
         },
         {
           "name": "putPetToSleep",
-          "description": "Restores pet's energy and updates last slept timestamp",
-          "parameters": null,
+          "description": "Increases pet's energy stat and updates it in storage",
+          "parameters": [],
           "return_type": "Future<void>"
         }
       ],
       "dependencies": [
-        "models/pet/pet_model.dart",
-        "models/pet/pet_status.dart",
-        "repositories/pet_repository.dart",
-        "utils/const/const.dart"
+        "for_tamagochi/app/app.locator.dart",
+        "for_tamagochi/models/pet/pet_model.dart",
+        "for_tamagochi/models/pet/pet_status.dart",
+        "for_tamagochi/repositories/pet_repository.dart",
+        "for_tamagochi/utils/const/const.dart"
       ]
     },
     {
@@ -573,53 +590,63 @@
     },
     {
       "name": "lib/ui/views/pet/pet_view.dart",
-      "description": "A Flutter view responsible for displaying and interacting with a virtual pet (Tamagotchi), providing a comprehensive interface for pet management and interaction",
-      "class_diagram": "@startuml\nclass PetView {\n  -bool isNewPet\n  +Widget builder(BuildContext context, PetViewModel viewModel)\n  +PetViewModel viewModelBuilder(BuildContext context)\n  +void onViewModelReady(PetViewModel viewModel)\n}\n@enduml",
+      "description": "A Flutter view component that displays the main pet interaction screen in a Tamagotchi-style game. It shows the pet's status, stats, and provides interaction buttons for feeding, playing, and putting the pet to sleep. The view handles both existing pets and new pet creation scenarios.",
+      "class_diagram": "@startuml\nclass PetView {\n  - bool isNewPet\n  + Widget builder(BuildContext, PetViewModel, Widget?)\n  + PetViewModel viewModelBuilder(BuildContext)\n  + void onViewModelReady(PetViewModel)\n}\nPetView --|> StackedView\nPetView --> PetViewModel\nPetView --> PetStatsWidget\nPetView --> PetActionsWidget\nPetView --> PetAnimationWidget\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the main UI for pet interaction, handling different states like loading, error, and pet display",
+          "description": "Builds the main UI layout for the pet view, including loading states, error handling, and the main pet interaction interface",
           "parameters": [
-            "BuildContext",
-            "PetViewModel",
-            "Widget?"
+            "BuildContext context",
+            "PetViewModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Creates and initializes the PetViewModel for managing pet state and interactions",
+          "description": "Creates and returns a new instance of PetViewModel",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "PetViewModel"
         },
         {
           "name": "onViewModelReady",
-          "description": "Triggers initialization of the pet, potentially creating a new pet or loading an existing one",
+          "description": "Initializes the view model when the view is first created, handling new pet creation if necessary",
           "parameters": [
-            "PetViewModel"
+            "PetViewModel viewModel"
           ],
-          "return_type": null
+          "return_type": "void"
         }
       ],
       "dependencies": [
-        "package:stacked/stacked.dart",
         "package:flutter/material.dart",
-        "pet_viewmodel.dart",
-        "pet_stats_widget.dart",
-        "pet_actions_widget.dart",
-        "pet_animation_widget.dart"
+        "package:stacked/stacked.dart",
+        "package:for_tamagochi/ui/common/app_colors.dart",
+        "package:for_tamagochi/ui/common/ui_helpers.dart",
+        "package:for_tamagochi/ui/views/pet/pet_viewmodel.dart",
+        "package:for_tamagochi/ui/views/pet/widgets/pet_stats_widget.dart",
+        "package:for_tamagochi/ui/views/pet/widgets/pet_actions_widget.dart",
+        "package:for_tamagochi/ui/views/pet/widgets/pet_animation_widget.dart"
       ]
     },
     {
       "name": "lib/ui/views/pet/widgets/pet_actions_widget.dart",
-      "description": "A widget that provides interactive action buttons for a digital pet's core interactions: feeding, playing, and sleeping, with state-aware disabling when the pet is dead",
-      "class_diagram": "@startuml\nclass PetActionsWidget {\n  - onFeed: VoidCallback\n  - onPlay: VoidCallback\n  - onSleep: VoidCallback\n  - petStatus: PetStatus\n  + build(context): Widget\n}\nclass _ActionButton {\n  - icon: IconData\n  - label: String\n  - color: Color\n  - onPressed: VoidCallback\n  + build(context): Widget\n}\n@enduml",
+      "description": "A Flutter widget that displays the main interaction buttons for a virtual pet game. It provides three core actions - feeding, playing, and putting the pet to sleep. The widget automatically disables all actions if the pet is dead. Each action button is color-coded and includes an icon and label.",
+      "class_diagram": "@startuml\nclass PetActionsWidget {\n  +VoidCallback onFeed\n  +VoidCallback onPlay\n  +VoidCallback onSleep\n  +PetStatus petStatus\n  +Widget build()\n}\n\nclass _ActionButton {\n  -IconData icon\n  -String label\n  -Color color\n  -VoidCallback? onPressed\n  +Widget build()\n}\n\nPetActionsWidget --> _ActionButton\n@enduml",
       "methods": [
         {
-          "name": "build",
-          "description": "Renders action buttons for pet interactions with conditional disabling based on pet status",
+          "name": "build (PetActionsWidget)",
+          "description": "Constructs the main widget layout with three action buttons in a row, disabling them if the pet is dead",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "Widget"
+        },
+        {
+          "name": "build (_ActionButton)",
+          "description": "Creates a styled circular button with an icon and label below it",
           "parameters": [
             "BuildContext context"
           ],
@@ -674,36 +701,44 @@
     },
     {
       "name": "lib/ui/views/pet/widgets/pet_animation_widget.dart",
-      "description": "A Flutter widget responsible for rendering a pet's animated visual representation with dynamic status, color, and bounce effect to enhance user engagement in a virtual pet application",
-      "class_diagram": "@startuml\nclass PetAnimationWidget {\n  - PetStatus status\n  - String name\n  + build()\n  - _getStatusColor()\n}\n@enduml",
+      "description": "A Flutter widget that displays an animated pet representation with status-based visual feedback. It shows a circular avatar with an emoji, the pet's name, and status, featuring a bouncing animation when the pet is alive. The widget adapts its appearance based on the pet's current status (happy, hungry, sick, tired, or dead).",
+      "class_diagram": "@startuml\nclass PetAnimationWidget {\n  +PetStatus status\n  +String name\n  +createState(): _PetAnimationWidgetState\n}\n\nclass _PetAnimationWidgetState {\n  -AnimationController _controller\n  -Animation<double> _bounceAnimation\n  -bool _shouldAnimate\n  -Color _getStatusColor()\n  +build(BuildContext): Widget\n}\n\nPetAnimationWidget *-- _PetAnimationWidgetState\n@enduml",
       "methods": [
         {
-          "name": "build",
-          "description": "Constructs the visual representation of the pet with animated emoji, name, and status",
+          "name": "createState",
+          "description": "Creates the mutable state for the pet animation widget",
           "parameters": null,
-          "return_type": "Widget"
+          "return_type": "_PetAnimationWidgetState"
         },
         {
           "name": "_getStatusColor",
-          "description": "Maps pet status to corresponding color representation",
+          "description": "Returns the appropriate color based on the pet's current status",
           "parameters": null,
           "return_type": "Color"
+        },
+        {
+          "name": "build",
+          "description": "Builds the widget's UI with animated pet representation",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "Widget"
         }
       ],
       "dependencies": [
-        "package:flutter/material.dart",
-        "for_tamagochi/models/pet/pet_status.dart",
-        "for_tamagochi/ui/common/app_colors.dart"
+        "flutter/material.dart",
+        "models/pet/pet_status.dart",
+        "ui/common/app_colors.dart"
       ]
     },
     {
       "name": "lib/ui/views/pet/widgets/pet_stats_widget.dart",
-      "description": "A UI widget responsible for displaying a comprehensive visual representation of a pet's key stats in a Tamagochi-like application, showing health, hunger, happiness, and energy levels through color-coded progress bars",
-      "class_diagram": "@startuml\nclass PetStatsWidget {\n  -Pet pet\n  +build(BuildContext context): Widget\n  -_buildStatBar(String, int, Color, IconData): Widget\n  -_getStatColor(int): Color\n}\n@enduml",
+      "description": "A Flutter widget that displays a pet's vital statistics (health, hunger, happiness, energy) in a visual card format with progress bars. It provides an intuitive way to monitor a pet's current status through color-coded progress indicators and icons.",
+      "class_diagram": "@startuml\nclass PetStatsWidget {\n  - Pet pet\n  + build(BuildContext context): Widget\n  - _buildStatBar(String label, int value, Color color, IconData icon): Widget\n  - _getStatColor(int value): Color\n}\n@enduml",
       "methods": [
         {
           "name": "build",
-          "description": "Constructs the primary UI for displaying pet statistics as a card with progress bars",
+          "description": "Builds the main widget layout containing all pet statistics in a card format",
           "parameters": [
             "BuildContext context"
           ],
@@ -711,7 +746,7 @@
         },
         {
           "name": "_buildStatBar",
-          "description": "Creates an individual stat bar with label, icon, percentage, and color-coded progress indicator",
+          "description": "Creates an individual stat bar with label, value, icon, and progress indicator",
           "parameters": [
             "String label",
             "int value",
@@ -722,7 +757,7 @@
         },
         {
           "name": "_getStatColor",
-          "description": "Determines the color of a stat based on its current value (critical, warning, or healthy)",
+          "description": "Determines the color of the stat bar based on the value threshold",
           "parameters": [
             "int value"
           ],
@@ -738,29 +773,37 @@
     },
     {
       "name": "lib/ui/bottom_sheets/pet_shop/pet_shop_sheet.dart",
-      "description": "A bottom sheet UI component for a virtual pet game's shop, allowing players to purchase items that restore pet stats like hunger, health, and happiness",
-      "class_diagram": "@startuml\nclass PetShopSheet {\n  +completer: Function(SheetResponse)\n  +request: SheetRequest\n  +builder(context, viewModel, child): Widget\n  -_buildShopItem(name, description, icon, onTap): Widget\n}\n@enduml",
+      "description": "A Flutter widget that implements a bottom sheet for a pet shop interface in a Tamagotchi-style game. It displays available items (food, medicine, toys) that players can purchase for their virtual pet. The sheet provides a user interface for the in-game store functionality.",
+      "class_diagram": "@startuml\nclass PetShopSheet {\n  +Function(SheetResponse)? completer\n  +SheetRequest request\n  +Widget builder(BuildContext, PetShopSheetModel, Widget?)\n  -Widget _buildShopItem(String, String, IconData, VoidCallback)\n  +PetShopSheetModel viewModelBuilder(BuildContext)\n}\nnote right: Extends StackedView<PetShopSheetModel>\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the visual layout of the pet shop bottom sheet with purchasable items",
+          "description": "Builds the main UI structure of the pet shop bottom sheet, including the list of purchasable items and close button",
           "parameters": [
-            "BuildContext",
-            "PetShopSheetModel",
-            "Widget?"
+            "BuildContext context",
+            "PetShopSheetModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "_buildShopItem",
-          "description": "Creates a standardized shop item tile with name, description, icon, and purchase button",
+          "description": "Creates a ListTile widget for each shop item with name, description, icon, and buy button",
           "parameters": [
-            "String",
-            "String",
-            "IconData",
-            "VoidCallback"
+            "String name",
+            "String description",
+            "IconData icon",
+            "VoidCallback onTap"
           ],
           "return_type": "Widget"
+        },
+        {
+          "name": "viewModelBuilder",
+          "description": "Creates and returns a new instance of PetShopSheetModel",
+          "parameters": [
+            "BuildContext context"
+          ],
+          "return_type": "PetShopSheetModel"
         }
       ],
       "dependencies": [
@@ -814,33 +857,30 @@
     },
     {
       "name": "lib/models/pet/pet_model.dart",
-      "description": "Defines a data model representing a virtual pet in a Tamagochi-like application, managing the pet's core attributes, lifecycle, and state transformations",
-      "class_diagram": "@startuml\nclass Pet {\n  +id: String\n  +name: String\n  +health: int\n  +hunger: int\n  +happiness: int\n  +energy: int\n  +copyWith(): Pet\n  +initial(): Pet\n}\nenum PetStatus\n@enduml",
+      "description": "Defines the core Pet model class for a Tamagotchi-like game. This class represents a virtual pet with various attributes like health, hunger, happiness, and energy. It tracks the pet's status and timestamps of last interactions, providing immutable state management through copyWith pattern.",
+      "class_diagram": "@startuml\nclass Pet {\n  +String id\n  +String name\n  +int health\n  +int hunger\n  +int happiness\n  +int energy\n  +DateTime lastFed\n  +DateTime lastPlayed\n  +DateTime lastSlept\n  +PetStatus status\n  +Pet copyWith()\n  +{static} Pet initial(String name)\n}\nPet --|> Equatable\nPet --> PetStatus\n@enduml",
       "methods": [
         {
           "name": "copyWith",
-          "description": "Creates a new Pet instance with optional updated attributes, enabling immutable state updates",
+          "description": "Creates a new Pet instance with optionally updated attributes while maintaining immutability",
           "parameters": [
-            "id?",
-            "name?",
-            "health?",
-            "hunger?",
-            "happiness?",
-            "energy?",
-            "lastFed?",
-            "lastPlayed?",
-            "lastSlept?",
-            "status?"
+            "Optional parameters for each Pet attribute"
           ],
           "return_type": "Pet"
         },
         {
           "name": "initial",
-          "description": "Factory method for creating a new Pet with default starting attributes and generated ID",
+          "description": "Factory constructor that creates a new Pet with default values and given name",
           "parameters": [
-            "name"
+            "String name"
           ],
           "return_type": "Pet"
+        },
+        {
+          "name": "props",
+          "description": "Overridden getter from Equatable to enable value equality comparison",
+          "parameters": null,
+          "return_type": "List<Object?>"
         }
       ],
       "dependencies": [
@@ -866,21 +906,21 @@
     },
     {
       "name": "lib/features/startup/startup_viewmodel.dart",
-      "description": "Manages the initial startup logic and navigation flow for the application, responsible for performing pre-application initialization and routing to the first screen",
-      "class_diagram": "@startuml\nclass StartupViewModel {\n  -_navigationService: NavigationService\n  +runStartupLogic(): Future\n}\n@enduml",
+      "description": "A ViewModel class that handles the application startup logic, primarily responsible for managing the initial navigation flow. It implements a brief delay before redirecting users to the main pet view screen.",
+      "class_diagram": "@startuml\nclass StartupViewModel {\n  - _navigationService: NavigationService\n  + runStartupLogic(): Future<void>\n}\nBaseViewModel <|-- StartupViewModel\nStartupViewModel --> NavigationService\n@enduml",
       "methods": [
         {
           "name": "runStartupLogic",
-          "description": "Executes initial startup tasks and determines the first navigation route, typically after a brief delay for potential splash screen or initialization processes",
-          "parameters": null,
-          "return_type": "Future"
+          "description": "Executes the startup sequence by implementing a 1-second delay and then navigating to the pet view screen",
+          "parameters": [],
+          "return_type": "Future<void>"
         }
       ],
       "dependencies": [
         "stacked",
         "stacked_services",
-        "app.locator",
-        "app.router"
+        "app.locator.dart",
+        "app.router.dart"
       ]
     },
     {
@@ -923,46 +963,55 @@
     },
     {
       "name": "lib/features/app/app_view.dart",
-      "description": "Root application view configuration responsible for setting up global app navigation, routing, and core UI behaviors like keyboard dismissal and text scaling",
-      "class_diagram": "@startuml\nclass AppView {\n  + build(BuildContext context)\n}\nclass _App {\n  + build(BuildContext context, AppViewModel viewModel)\n}\n@enduml",
+      "description": "Root widget of the application that sets up the main MaterialApp with navigation configuration, text scaling constraints, and keyboard dismissal behavior. It serves as the application's entry point for UI and establishes the basic app infrastructure.",
+      "class_diagram": "@startuml\nclass AppView {\n  +build(BuildContext): Widget\n}\n\nclass _App {\n  +build(BuildContext, AppViewModel): Widget\n}\n\nAppView --> _App\n_App --> AppViewModel\n@enduml",
       "methods": [
         {
-          "name": "build",
-          "description": "Configures the root MaterialApp with initial routing, navigation services, and global UI behaviors",
+          "name": "build (AppView)",
+          "description": "Constructs the root widget tree with ViewModelBuilder for state management",
           "parameters": [
             "BuildContext context"
+          ],
+          "return_type": "Widget"
+        },
+        {
+          "name": "build (_App)",
+          "description": "Configures and returns the MaterialApp with navigation setup and gesture handling",
+          "parameters": [
+            "BuildContext context",
+            "AppViewModel viewModel"
           ],
           "return_type": "Widget"
         }
       ],
       "dependencies": [
         "flutter/material.dart",
+        "for_tamagochi/app/app.router.dart",
+        "for_tamagochi/features/app/app_viewmodel.dart",
         "stacked/stacked.dart",
-        "stacked_services/stacked_services.dart",
-        "app/app.router.dart",
-        "features/app/app_viewmodel.dart"
+        "stacked_services/stacked_services.dart"
       ]
     },
     {
       "name": "lib/features/home/home_view.dart",
-      "description": "A Flutter view component representing the home screen, utilizing the Stacked architecture pattern to manage user interactions and state through a ViewModel",
-      "class_diagram": "@startuml\nclass HomeView {\n  +builder(context, viewModel, child)\n  +viewModelBuilder(context)\n}\nclass HomeViewModel {\n  +incrementCounter()\n  +showDialog()\n  +showBottomSheet()\n}\n@enduml",
+      "description": "A Flutter view class that implements the home screen UI using the Stacked MVVM architecture. It displays a counter with increment functionality and buttons to show dialog/bottom sheet, demonstrating basic UI interactions and state management.",
+      "class_diagram": "@startuml\nclass HomeView {\n  +builder(BuildContext, HomeViewModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): HomeViewModel\n}\nnote right: Extends StackedView<HomeViewModel>\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the visual layout of the home screen with a counter, buttons, and interactive elements",
+          "description": "Builds the UI structure of the home screen with counter display and interaction buttons",
           "parameters": [
-            "BuildContext",
-            "HomeViewModel",
-            "Widget?"
+            "BuildContext context",
+            "HomeViewModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Creates and provides the HomeViewModel instance for state management",
+          "description": "Creates and returns the HomeViewModel instance for this view",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "HomeViewModel"
         }
@@ -1013,7 +1062,7 @@
       "purpose": "Creating gaps in layouts"
     }
   ],
-  "sequence_diagram": "@startuml\nactor User\nparticipant AppView\nparticipant StartupView\nparticipant PetView\nparticipant PetViewModel\nparticipant PetService\n\nUser -> AppView: Launch App\nAppView -> StartupView: Initialize\nStartupView -> PetView: Navigate\nUser -> PetView: Interact with Pet\nPetView -> PetViewModel: Trigger Action\nPetViewModel -> PetService: Update Pet Status\nPetService --> PetViewModel: Return Updated Pet\nPetViewModel --> PetView: Update UI\n@enduml",
-  "state_management_flow": "Utilizing Stacked framework's BaseViewModel for reactive state management. Each view (PetView, HomeView) has a corresponding ViewModel that manages its state. ViewModels interact with services like PetService and handle user interactions, triggering UI updates through reactive programming. State changes are propagated through ViewModels, ensuring a unidirectional data flow and maintaining a clear separation between UI rendering and business logic.",
-  "navigation_flow": "Navigation is managed through Stacked router, defined in app.router.dart. The primary flow starts with AppView, transitions through StartupView, and then to the main PetView. The NavigationService handles screen transitions, with predefined routes allowing seamless navigation between different screens. Route transitions support parameter passing and can include custom transition animations, providing a flexible and type-safe navigation mechanism."
+  "sequence_diagram": "@startuml\nactor User\nparticipant StartupView\nparticipant PetView\nparticipant PetViewModel\nparticipant PetService\nparticipant PetRepository\n\nUser -> StartupView: Launch App\nStartupView -> PetService: Check Existing Pet\nPetService -> PetRepository: Get Pet Data\nPetRepository --> PetService: Return Pet\nPetService --> StartupView: Pet Status\nStartupView -> PetView: Navigate\n\nUser -> PetView: Feed Pet\nPetView -> PetViewModel: Handle Feed Action\nPetViewModel -> PetService: Update Pet Stats\nPetService -> PetRepository: Save Updated Pet\nPetRepository --> PetService: Confirm Save\nPetService --> PetViewModel: Updated Pet State\nPetViewModel --> PetView: Refresh UI\n@enduml",
+  "state_management_flow": "State management is implemented using Stacked architecture with reactive ViewModels. Key flows include:\n1. PetViewModel manages pet state and user interactions\n2. BaseViewModel provides reactive state capabilities\n3. Services handle business logic and data updates\n4. State changes trigger UI updates through reactive bindings\n5. PetService maintains pet lifecycle and status updates\n6. Repository handles persistent storage state\nThe app uses reactive programming to ensure UI consistency with business logic state.",
+  "navigation_flow": "Navigation is handled through Stacked's router configuration with the following flow:\n1. App initializes at StartupView\n2. StartupView checks for existing pet\n3. Navigates to PetView for main interaction\n4. Modal dialogs show pet status details\n5. Bottom sheets provide shop interface\nNavigation uses type-safe routes with parameter passing capabilities and supports custom transitions. The NavigationService manages all navigation actions centrally."
 }
