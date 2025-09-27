@@ -1,98 +1,101 @@
 {
   "package_name": "com.global_burger.for_tamagochi",
-  "project_description": "A Tamagotchi-style mobile application that allows users to create, care for, and interact with a virtual pet. The app provides a comprehensive pet management system with features like feeding, playing, and monitoring pet health. Key functionalities include pet creation, status tracking, interactive pet actions, a pet shop, and detailed status dialogs. The application leverages Stacked architecture with robust state management and modular service design.",
-  "architecture_overview": "Implemented using Stacked architecture with a clear separation of concerns. The application is structured around ViewModels, Services, and Views, utilizing dependency injection via StackedLocator. Core components include PetService for managing pet lifecycle, PetRepository for data persistence, and multiple specialized widgets for rendering pet interactions. The architecture supports modular design, easy extensibility, and clean separation between UI and business logic.",
+  "project_description": "A Tamagotchi-style mobile application that enables users to create and interact with virtual pets. The app features comprehensive pet management including feeding, playing, and monitoring pet health stats. Key functionalities include pet creation, real-time status tracking, interactive pet actions (feed, play, sleep), a pet shop system, and detailed status dialogs. The application uses Stacked architecture for robust state management and follows a modular service design pattern.",
+  "architecture_overview": "The application implements a clean Stacked architecture with three main layers:\n1. Views (UI Layer): Includes PetView, StartupView with corresponding ViewModels\n2. Services Layer: PetService manages pet lifecycle, status updates, and interactions\n3. Repository Layer: PetRepository handles data persistence\n\nThe app uses dependency injection via StackedLocator for service management and implements dedicated services for navigation, dialogs, and analytics. The architecture emphasizes separation of concerns and maintainable, testable code.",
   "files": [
     {
       "name": "lib/app/app.dart",
-      "description": "Defines the app structure using StackedApp annotation for routes, dependencies, bottom sheets, and dialogs. It includes routes (HomeView, StartupView), services (BottomSheetService, DialogService, NavigationService), bottom sheets (NoticeSheet), and dialogs (InfoAlertDialog). The file structure allows for easy addition of new services, routes, bottom sheets, and dialogs using the @stacked-import, @stacked-route, @stacked-service, @stacked-bottom-sheet, and @stacked-dialog annotations.",
-      "class_diagram": "@startuml\nclass App\n@enduml",
+      "description": "This is the application configuration file that defines the core setup of the app using the Stacked architecture. It centralizes route definitions, dependency injections, bottom sheets, and dialog registrations. The file serves as the main orchestrator for the Tamagotchi-style pet game application.",
+      "class_diagram": "@startuml\nclass App {\n}\n\npackage \"Services\" {\n    class NavigationService\n    class DialogService\n    class BottomSheetService\n    class AnalyticService\n    class PetService\n}\n\npackage \"Views\" {\n    class StartupView\n    class PetView\n}\n\npackage \"Repository\" {\n    class PetRepository\n}\n\nApp --> NavigationService\nApp --> DialogService\nApp --> BottomSheetService\nApp --> AnalyticService\nApp --> PetService\nApp --> PetRepository\n@enduml",
       "methods": [],
       "dependencies": [
-        "package:stacked/stacked_annotations.dart",
-        "package:stacked_services/stacked_services.dart",
-        "package:my_app/ui/bottom_sheets/notice/notice_sheet.dart",
-        "package:my_app/ui/dialogs/info_alert/info_alert_dialog.dart",
-        "package:my_app/features/home/home_view.dart",
-        "package:my_app/features/startup/startup_view.dart"
+        "stacked",
+        "stacked_services",
+        "for_tamagochi/ui/views/startup/startup_view.dart",
+        "for_tamagochi/ui/views/pet/pet_view.dart",
+        "for_tamagochi/services/pet_service.dart",
+        "for_tamagochi/services/analytic_service.dart",
+        "for_tamagochi/repositories/pet_repository.dart",
+        "for_tamagochi/ui/bottom_sheets/notice/notice_sheet.dart",
+        "for_tamagochi/ui/bottom_sheets/pet_shop/pet_shop_sheet.dart",
+        "for_tamagochi/ui/dialogs/info_alert/info_alert_dialog.dart",
+        "for_tamagochi/ui/dialogs/pet_status/pet_status_dialog.dart"
       ]
     },
     {
       "name": "lib/app/app.bottomsheets.dart",
-      "description": "This file is responsible for managing the bottom sheet UI in the Flutter application. It sets up the custom bottom sheet builders for different types of bottom sheets, allowing the application to display various types of bottom sheets as needed.",
-      "class_diagram": "@startuml\n\nclass BottomSheetService {\n  + setCustomSheetBuilders(builders: Map<BottomSheetType, SheetBuilder>)\n}\n\nclass BottomSheetType {\n  + notice\n}\n\ninterface SheetBuilder {\n  + (context: BuildContext, request: SheetRequest, completer: SheetCompleter)\n}\n\nclass NoticeSheet {\n  + (request: SheetRequest, completer: SheetCompleter)\n}\n\nBottomSheetService --> BottomSheetType\nBottomSheetService --> SheetBuilder\nNoticeSheet .> SheetBuilder\n\n@enduml",
+      "description": "A generated file that sets up and registers bottom sheet UI components for the application using the Stacked architecture. It provides a centralized way to manage and display bottom sheets through a service-based approach.",
+      "class_diagram": "@startuml\nclass \"BottomSheetType\" {\n  +notice\n}\n\nclass \"BottomSheetSetup\" {\n  +setupBottomSheetUi()\n}\n\nclass \"BottomSheetService\"\n\n\"BottomSheetSetup\" --> \"BottomSheetService\"\n\"BottomSheetSetup\" --> \"BottomSheetType\"\n@enduml",
       "methods": [
         {
           "name": "setupBottomSheetUi",
-          "description": "Sets up the custom bottom sheet builders for different types of bottom sheets, allowing the application to display various types of bottom sheets as needed.",
-          "parameters": [
-            "None"
-          ],
+          "description": "Initializes and registers bottom sheet builders with the BottomSheetService for different bottom sheet types",
+          "parameters": [],
           "return_type": "void"
         }
       ],
       "dependencies": [
-        "my_app/app/app.locator.dart",
-        "my_app/ui/bottom_sheets/notice/notice_sheet.dart",
-        "stacked_services/stacked_services.dart"
+        "stacked_services/stacked_services.dart",
+        "app.locator.dart",
+        "ui/bottom_sheets/notice/notice_sheet.dart"
       ]
     },
     {
       "name": "lib/app/app.router.dart",
-      "description": "This file is responsible for managing the navigation and routing within the Flutter application. It defines the available routes, the corresponding views, and provides utility methods to navigate between these views.",
-      "class_diagram": "@startuml\nclass Routes {\n  +static const homeView: String\n  +static const startupView: String\n  +static const all: Set<String>\n}\n\nclass StackedRouter extends RouterBase {\n  +List<RouteDef> get routes()\n  +Map<Type, StackedRouteFactory> get pagesMap()\n}\n\nclass NavigatorStateExtension on NavigationService {\n  +Future<dynamic> navigateToHomeView(...)\n  +Future<dynamic> navigateToStartupView(...)\n  +Future<dynamic> replaceWithHomeView(...)\n  +Future<dynamic> replaceWithStartupView(...)\n}\n@enduml",
+      "description": "A generated router file that handles navigation between different views in the application using the Stacked framework. It defines routes, manages route definitions, and provides navigation methods for HomeView and StartupView.",
+      "class_diagram": "@startuml\nclass Routes {\n  {static} String homeView\n  {static} String startupView\n  {static} Set<String> all\n}\n\nclass StackedRouter {\n  - List<RouteDef> _routes\n  - Map<Type, StackedRouteFactory> _pagesMap\n  + List<RouteDef> routes\n  + Map<Type, StackedRouteFactory> pagesMap\n}\n\nclass NavigatorStateExtension {\n  + Future<dynamic> navigateToHomeView()\n  + Future<dynamic> navigateToStartupView()\n  + Future<dynamic> replaceWithHomeView()\n  + Future<dynamic> replaceWithStartupView()\n}\n@enduml",
       "methods": [
         {
           "name": "navigateToHomeView",
-          "description": "Navigates to the HomeView screen.",
+          "description": "Navigates to the HomeView screen",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "navigateToStartupView",
-          "description": "Navigates to the StartupView screen.",
+          "description": "Navigates to the StartupView screen",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "replaceWithHomeView",
-          "description": "Replaces the current route with the HomeView screen.",
+          "description": "Replaces current screen with HomeView",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         },
         {
           "name": "replaceWithStartupView",
-          "description": "Replaces the current route with the StartupView screen.",
+          "description": "Replaces current screen with StartupView",
           "parameters": [
-            "int?",
-            "bool",
-            "Map<String, String>?",
-            "Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?"
+            "routerId",
+            "preventDuplicates",
+            "parameters",
+            "transition"
           ],
           "return_type": "Future<dynamic>"
         }
       ],
       "dependencies": [
-        "package:flutter/material.dart",
-        "package:my_app/ui/views/home/home_view.dart",
-        "package:my_app/ui/views/startup/startup_view.dart",
-        "package:stacked/stacked.dart",
-        "package:stacked_services/stacked_services.dart"
+        "flutter/material.dart",
+        "stacked/stacked.dart",
+        "stacked_services/stacked_services.dart",
+        "features/home/home_view.dart",
+        "features/startup/startup_view.dart"
       ]
     },
     {
@@ -146,40 +149,45 @@
     },
     {
       "name": "lib/ui/common/ui_helpers.dart",
-      "description": "This Dart file provides a collection of common UI helper functions and constants that are used throughout the Flutter application's user interface. It serves as a centralized location for managing and accessing various UI-related utilities, ensuring consistency and reusability across the codebase.",
-      "class_diagram": "@startuml\nclass UIHelpers {\n  + const horizontalSpaceTiny: Widget\n  + const horizontalSpaceSmall: Widget\n  + const horizontalSpaceMedium: Widget\n  + const horizontalSpaceLarge: Widget\n  + const verticalSpaceTiny: Widget\n  + const verticalSpaceSmall: Widget\n  + const verticalSpaceMedium: Widget\n  + const verticalSpaceLarge: Widget\n  + const verticalSpaceMassive: Widget\n  + const spacedDivider: Widget\n  + verticalSpace(height: double): Widget\n  + screenWidth(context: BuildContext): double\n  + screenHeight(context: BuildContext): double\n  + screenHeightFraction(context: BuildContext, dividedBy: int, offsetBy: double, max: double): double\n  + screenWidthFraction(context: BuildContext, dividedBy: int, offsetBy: double, max: double): double\n  + halfScreenWidth(context: BuildContext): double\n  + thirdScreenWidth(context: BuildContext): double\n  + quarterScreenWidth(context: BuildContext): double\n  + getResponsiveHorizontalSpaceMedium(context: BuildContext): double\n  + getResponsiveSmallFontSize(context: BuildContext): double\n  + getResponsiveMediumFontSize(context: BuildContext): double\n  + getResponsiveLargeFontSize(context: BuildContext): double\n  + getResponsiveExtraLargeFontSize(context: BuildContext): double\n  + getResponsiveMassiveFontSize(context: BuildContext): double\n  + getResponsiveFontSize(context: BuildContext, fontSize: double, max: double): double\n}\n@enduml",
+      "description": "A utility file that provides a collection of standardized UI spacing and sizing helpers for consistent layout and responsive design across the application. It includes predefined spacing widgets, screen dimension calculations, and responsive font sizing utilities.",
+      "class_diagram": "@startuml\nset namespaceSeparator ::\n\nclass ui_helpers {\n  {static} +horizontalSpaceTiny: Widget\n  {static} +verticalSpaceMedium: Widget\n  {static} +screenWidth(context): double\n  {static} +screenHeight(context): double\n  {static} +getResponsiveFontSize(context, fontSize, max): double\n  {static} +screenWidthFraction(context, dividedBy, offsetBy, max): double\n}\n@enduml",
       "methods": [
         {
-          "name": "horizontalSpaceTiny",
-          "description": "A constant Widget that provides a tiny horizontal space.",
-          "parameters": null,
-          "return_type": "Widget"
-        },
-        {
-          "name": "verticalSpace",
-          "description": "A function that creates a Widget with a specified vertical space.",
-          "parameters": [
-            "height"
-          ],
-          "return_type": "Widget"
-        },
-        {
           "name": "screenWidth",
-          "description": "A function that returns the width of the screen.",
+          "description": "Gets the total width of the device screen",
           "parameters": [
-            "context"
+            "BuildContext context"
+          ],
+          "return_type": "double"
+        },
+        {
+          "name": "screenWidthFraction",
+          "description": "Calculates a fraction of the screen width with optional offset and maximum value",
+          "parameters": [
+            "BuildContext context",
+            "int dividedBy",
+            "double offsetBy",
+            "double max"
           ],
           "return_type": "double"
         },
         {
           "name": "getResponsiveFontSize",
-          "description": "A function that calculates a responsive font size based on the screen width.",
+          "description": "Calculates a responsive font size based on screen width",
           "parameters": [
-            "context",
-            "fontSize",
-            "max"
+            "BuildContext context",
+            "double? fontSize",
+            "double? max"
           ],
           "return_type": "double"
+        },
+        {
+          "name": "verticalSpace",
+          "description": "Creates a vertical spacing widget with custom height",
+          "parameters": [
+            "double height"
+          ],
+          "return_type": "Widget"
         }
       ],
       "dependencies": [
@@ -339,66 +347,72 @@
     },
     {
       "name": "lib/app/app.locator.dart",
-      "description": "This file is responsible for setting up and managing the service locator in a Flutter application built using the Stacked architecture pattern. The service locator is a crucial component that allows different parts of the application to access and interact with various services and dependencies, promoting a modular and decoupled design.",
-      "class_diagram": "",
+      "description": "A generated dependency injection configuration file that sets up the service locator for the application. It provides centralized access to core services like navigation, dialogs, and bottom sheets using the Stacked architecture pattern.",
+      "class_diagram": "@startuml\nclass StackedLocator {\n  +{static} instance: StackedLocator\n  +registerEnvironment(environment: String?, environmentFilter: EnvironmentFilter?)\n  +registerLazySingleton<T>(factory: Function)\n}\n\nclass \"Core Services\" {\n  +BottomSheetService\n  +DialogService\n  +NavigationService\n}\n\nStackedLocator ..> \"Core Services\" : registers\n@enduml",
       "methods": [
         {
           "name": "setupLocator",
-          "description": "This method is responsible for registering the necessary services and dependencies with the service locator. It allows the application to access and use these services throughout the codebase.",
+          "description": "Initializes the service locator by registering core services as lazy singletons and configuring the environment",
           "parameters": [
-            "environment",
-            "environmentFilter"
+            "environment: String?",
+            "environmentFilter: EnvironmentFilter?"
           ],
           "return_type": "Future<void>"
         }
       ],
       "dependencies": [
-        "stacked_services/src/bottom_sheet/bottom_sheet_service.dart",
-        "stacked_services/src/dialog/dialog_service.dart",
-        "stacked_services/src/navigation/navigation_service.dart",
+        "stacked_services/bottom_sheet/bottom_sheet_service.dart",
+        "stacked_services/dialog/dialog_service.dart",
+        "stacked_services/navigation/navigation_service.dart",
         "stacked_shared/stacked_shared.dart"
       ]
     },
     {
       "name": "lib/app/app.dialogs.dart",
-      "description": "This file is responsible for setting up and managing the dialog system used throughout the application. It defines the available dialog types, registers the custom dialog builders, and provides a centralized way to interact with the dialog service.",
-      "class_diagram": "@startuml\n'Hide the stereotype since it is the default for class\n'hide circle\n'hide methods\n'skinparam classAttributeIconSize 0\n\nclass DialogType {\n  infoAlert\n}\n\nclass DialogBuilder {\n  (BuildContext, DialogRequest, DialogCompleter) => Widget\n}\n\nclass DialogService {\n  + registerCustomDialogBuilders(Map<DialogType, DialogBuilder>)\n}\n\n'Relationships\nDialogType *-- DialogBuilder : builds\nDialogService o-- DialogBuilder : uses\n\n@enduml",
+      "description": "A generated file that sets up and registers custom dialog UI builders for the application. It creates a centralized dialog management system that maps dialog types to their corresponding UI implementations using the stacked_services DialogService.",
+      "class_diagram": "@startuml\nclass DialogType {\n  {static} infoAlert\n}\n\nclass \"setupDialogUi()\" {\n  + void execute()\n}\n\nclass DialogService\n\n\"setupDialogUi()\" --> DialogService : uses\n\"setupDialogUi()\" --> DialogType : uses\n@enduml",
       "methods": [
         {
           "name": "setupDialogUi",
-          "description": "Configures the dialog service by registering the custom dialog builders for each dialog type.",
-          "parameters": null,
+          "description": "Initializes and registers custom dialog builders with the DialogService, mapping each DialogType to its corresponding dialog widget builder",
+          "parameters": [],
           "return_type": "void"
         }
       ],
       "dependencies": [
-        "my_app/app/app.locator.dart",
-        "my_app/ui/dialogs/info_alert/info_alert_dialog.dart",
-        "stacked_services/stacked_services.dart"
+        "stacked_services",
+        "app.locator.dart",
+        "ui/dialogs/info_alert/info_alert_dialog.dart"
       ]
     },
     {
       "name": "lib/features/home/home_viewmodel.dart",
-      "description": "A ViewModel for the home screen that manages counter state and provides user interaction methods for displaying dialogs and bottom sheets in a Flutter application",
-      "class_diagram": "@startuml\nclass HomeViewModel {\n  -int _counter\n  +incrementCounter()\n  +showDialog()\n  +showBottomSheet()\n}\n@enduml",
+      "description": "A ViewModel class that manages the business logic and state for the home screen of a Tamagotchi-like application. It handles a simple counter functionality and provides methods to show dialogs and bottom sheets for user interaction.",
+      "class_diagram": "@startuml\nclass HomeViewModel {\n  -_counter: int\n  -_dialogService: DialogService\n  -_bottomSheetService: BottomSheetService\n  +counterLabel: String\n  +incrementCounter()\n  +resetCounter()\n  +showDialog()\n  +showBottomSheet()\n}\nBaseViewModel <|-- HomeViewModel\n@enduml",
       "methods": [
         {
           "name": "incrementCounter",
-          "description": "Increments the internal counter and triggers UI rebuild",
+          "description": "Increments the counter value and triggers UI update",
           "parameters": null,
-          "return_type": null
+          "return_type": "void"
+        },
+        {
+          "name": "resetCounter",
+          "description": "Resets the counter value to zero and triggers UI update",
+          "parameters": null,
+          "return_type": "void"
         },
         {
           "name": "showDialog",
-          "description": "Displays a custom dialog with dynamic counter-based content",
+          "description": "Displays a custom dialog showing the current counter value",
           "parameters": null,
-          "return_type": null
+          "return_type": "void"
         },
         {
           "name": "showBottomSheet",
-          "description": "Displays a custom bottom sheet with predefined content",
+          "description": "Displays a custom bottom sheet with title and description",
           "parameters": null,
-          "return_type": null
+          "return_type": "void"
         }
       ],
       "dependencies": [
@@ -945,24 +959,24 @@
     },
     {
       "name": "lib/features/home/home_view.dart",
-      "description": "A Flutter view component representing the home screen, utilizing the Stacked architecture pattern to manage user interactions and state through a ViewModel",
-      "class_diagram": "@startuml\nclass HomeView {\n  +builder(context, viewModel, child)\n  +viewModelBuilder(context)\n}\nclass HomeViewModel {\n  +incrementCounter()\n  +showDialog()\n  +showBottomSheet()\n}\n@enduml",
+      "description": "A Flutter view class that implements the home screen UI of the application using the Stacked architecture pattern. It displays a counter with increment and reset buttons, along with options to show dialogs and bottom sheets. This view demonstrates basic UI interactions and state management using MVVM pattern.",
+      "class_diagram": "@startuml\nclass HomeView {\n  +builder(BuildContext, HomeViewModel, Widget?): Widget\n  +viewModelBuilder(BuildContext): HomeViewModel\n}\nnote right: Extends StackedView<HomeViewModel>\n@enduml",
       "methods": [
         {
           "name": "builder",
-          "description": "Constructs the visual layout of the home screen with a counter, buttons, and interactive elements",
+          "description": "Builds the UI structure of the home screen, including counter display, action buttons, and layout",
           "parameters": [
-            "BuildContext",
-            "HomeViewModel",
-            "Widget?"
+            "BuildContext context",
+            "HomeViewModel viewModel",
+            "Widget? child"
           ],
           "return_type": "Widget"
         },
         {
           "name": "viewModelBuilder",
-          "description": "Creates and provides the HomeViewModel instance for state management",
+          "description": "Creates and returns the HomeViewModel instance for this view",
           "parameters": [
-            "BuildContext"
+            "BuildContext context"
           ],
           "return_type": "HomeViewModel"
         }
@@ -1013,7 +1027,7 @@
       "purpose": "Creating gaps in layouts"
     }
   ],
-  "sequence_diagram": "@startuml\nactor User\nparticipant AppView\nparticipant StartupView\nparticipant PetView\nparticipant PetViewModel\nparticipant PetService\n\nUser -> AppView: Launch App\nAppView -> StartupView: Initialize\nStartupView -> PetView: Navigate\nUser -> PetView: Interact with Pet\nPetView -> PetViewModel: Trigger Action\nPetViewModel -> PetService: Update Pet Status\nPetService --> PetViewModel: Return Updated Pet\nPetViewModel --> PetView: Update UI\n@enduml",
-  "state_management_flow": "Utilizing Stacked framework's BaseViewModel for reactive state management. Each view (PetView, HomeView) has a corresponding ViewModel that manages its state. ViewModels interact with services like PetService and handle user interactions, triggering UI updates through reactive programming. State changes are propagated through ViewModels, ensuring a unidirectional data flow and maintaining a clear separation between UI rendering and business logic.",
-  "navigation_flow": "Navigation is managed through Stacked router, defined in app.router.dart. The primary flow starts with AppView, transitions through StartupView, and then to the main PetView. The NavigationService handles screen transitions, with predefined routes allowing seamless navigation between different screens. Route transitions support parameter passing and can include custom transition animations, providing a flexible and type-safe navigation mechanism."
+  "sequence_diagram": "@startuml\nactor User\nparticipant PetView\nparticipant PetViewModel\nparticipant PetService\nparticipant PetRepository\n\nUser -> PetView: Interact with Pet\nPetView -> PetViewModel: Handle Action\nPetViewModel -> PetService: Process Pet Action\nPetService -> PetRepository: Update Pet Data\nPetRepository --> PetService: Return Updated Pet\nPetService --> PetViewModel: Return Status\nPetViewModel --> PetView: Update UI\nPetView --> User: Show Updated Pet State\n@enduml",
+  "state_management_flow": "State management is implemented using Stacked's reactive ViewModels:\n1. Each view has a dedicated ViewModel (PetViewModel, StartupViewModel)\n2. ViewModels extend BaseViewModel for reactive state updates\n3. PetService maintains core pet state and business logic\n4. State changes trigger UI updates through reactive bindings\n5. Dialog and bottom sheet states are managed via StackedServices\n6. Pet stats (health, hunger, happiness, energy) are tracked and updated reactively",
+  "navigation_flow": "Navigation is handled through Stacked's router configuration:\n1. Initial route launches StartupView for app initialization\n2. Main navigation transitions to PetView for primary pet interaction\n3. Dialog Service manages PetStatusDialog and InfoAlertDialog displays\n4. BottomSheetService handles PetShop and Notice sheet presentations\n5. Navigation uses type-safe routes defined in app.router.dart\n6. Route guards and parameters are supported for complex navigation scenarios"
 }
