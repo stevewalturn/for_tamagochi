@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:stacked/stacked.dart';
-
 import 'home_viewmodel.dart';
 
 class HomeView extends StackedView<HomeViewModel> {
   const HomeView({Key? key}) : super(key: key);
 
   @override
-  Widget builder(
-    BuildContext context,
-    HomeViewModel viewModel,
-    Widget? child,
-  ) {
+  Widget builder(BuildContext context, HomeViewModel viewModel, Widget? child) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -41,6 +37,15 @@ class HomeView extends StackedView<HomeViewModel> {
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
+                    const Gap(10),
+                    MaterialButton(
+                      color: Colors.red,
+                      onPressed: viewModel.resetCounter,
+                      child: const Text(
+                        'Reset Counter',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
                 Row(
@@ -51,9 +56,7 @@ class HomeView extends StackedView<HomeViewModel> {
                       onPressed: viewModel.showDialog,
                       child: const Text(
                         'Show Dialog',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                     MaterialButton(
@@ -61,13 +64,11 @@ class HomeView extends StackedView<HomeViewModel> {
                       onPressed: viewModel.showBottomSheet,
                       child: const Text(
                         'Show Bottom Sheet',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -77,8 +78,5 @@ class HomeView extends StackedView<HomeViewModel> {
   }
 
   @override
-  HomeViewModel viewModelBuilder(
-    BuildContext context,
-  ) =>
-      HomeViewModel();
+  HomeViewModel viewModelBuilder(BuildContext context) => HomeViewModel();
 }

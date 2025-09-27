@@ -17,6 +17,11 @@ class HomeViewModel extends BaseViewModel {
     rebuildUi();
   }
 
+  void resetCounter() {
+    _counter = 0;
+    rebuildUi();
+  }
+
   void showDialog() {
     _dialogService.showCustomDialog(
       variant: DialogType.infoAlert,
@@ -28,8 +33,8 @@ class HomeViewModel extends BaseViewModel {
   void showBottomSheet() {
     _bottomSheetService.showCustomSheet(
       variant: BottomSheetType.notice,
-      title: 'title',
-      description: 'desc',
+      title: 'Counter Status',
+      description: 'Your current count is $_counter',
     );
   }
 }
