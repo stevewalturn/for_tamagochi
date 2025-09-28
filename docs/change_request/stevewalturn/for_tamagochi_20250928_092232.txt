@@ -1,0 +1,5 @@
+Add a reset button to reset the task
+
+
+Previous AI Response Responding The Request:
+I'm sorry, but I wasn't able to build your app successfully despite multiple attempts. Would you like me to try again or would you prefer to make some changes to the code first?
